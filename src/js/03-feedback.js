@@ -26,13 +26,18 @@ function onFormSubmit(event) {
 refillInputsValue();
 function refillInputsValue() {
   const formVulues = localStorage.getItem(FORM_KEY);
-  console.log(formVulues);
-  const parsedFormData = JSON.parse(formVulues);
 
-  const formData = new FormData(formEl);
-  formData.forEach((value, name) => {
-    if (parsedFormData.hasOwnProperty(name)) {
-      formEl.elements[name].value = parsedFormData[name];
-    }
-  });
+  try {
+    const parsedFormData = JSON.parse(formVulues);
+    const formData = new FormData(formEl);
+
+    formData.forEach((value, name) => {
+      if (parsedFormData.hasOwnProperty(name)) {
+        formEl.elements[name].value = parsedFormData[name];
+      }
+    });
+  } catch (error) {
+    console.log(error.name);
+    console.log(error.message);
+  }
 }

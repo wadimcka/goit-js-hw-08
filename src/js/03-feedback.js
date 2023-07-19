@@ -10,7 +10,9 @@ let formValue = {};
 console.dir(formEl);
 
 function onTargetElInput(event) {
-  formValue[event.target.name] = event.target.value;
+  if (event.target.value !== '') {
+    formValue[event.target.name] = event.target.value;
+  }
 
   try {
     localStorage.setItem(FORM_KEY, JSON.stringify(formValue));
@@ -34,17 +36,19 @@ function onFormSubmit(event) {
 
 refillInputsValue();
 function refillInputsValue() {
-  const formVulues = localStorage.getItem(FORM_KEY);
+  const refillVulues = localStorage.getItem(FORM_KEY);
+
   try {
-    const parsedFormData = JSON.parse(formVulues);
-    const formData = new FormData(formEl);
-    formData.forEach((value, name) => {
-      if (parsedFormData.hasOwnProperty(name)) {
-        formEl.elements[name].value = parsedFormData[name];
-        formValue[name] = parsedFormData[name];
-        console.dir(formValue);
+    if (refillVulues) {
+      const parsedFormData = JSON.parse(refillVulues);
+      formValue = { refillVulues, ...parsedFormData };
+      delete formValue.refillVulues;
+      for (const name in parsedFormData) {
+        if (formEl.elements[name]) {
+          formEl.elements[name].value = parsedFormData[name];
+        }
       }
-    });
+    }
   } catch (error) {
     console.log(error.name);
     console.log(error.message);
